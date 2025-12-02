@@ -12,22 +12,6 @@ import (
 const fileName = "2025/day2/input.txt"
 const sampleFileName = "2025/day2/sampleInput.txt"
 
-// func parseFileToRanges() ([]Range, error) {
-// 	rangeStrings, err := parseFileToStrings()
-// 	rangesToReturn := []Range{}
-// 	if err != nil {
-// 		return []Range{}, err
-// 	}
-// 	for _, i := range rangeStrings {
-// 		parsedRange, err := parseRanges(i)
-// 		if err != nil {
-// 			return []Range{}, err
-// 		}
-// 		rangesToReturn = append(rangesToReturn, parsedRange)
-// 	}
-// 	return rangesToReturn, nil
-// }
-
 func parseFileToStrings() ([]string, error) {
 	fileStrings := utils.ReadFileToSlice(fileName)
 	if len(fileStrings) != 1 {

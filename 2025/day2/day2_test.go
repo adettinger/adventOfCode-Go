@@ -90,12 +90,35 @@ func TestIsSillyId(t *testing.T) {
 		{565653, false},
 		{824824821, false},
 		{2121212118, false},
+		{824824824, true},
+		{2121212121, true},
 	}
 	for _, tt := range cases {
 		t.Run(strconv.Itoa(tt.input), func(t *testing.T) {
 			result := isSillyId(tt.input)
 			if result != tt.isSilly {
 				t.Errorf("Expected %t, got %t for input %d", tt.isSilly, result, tt.input)
+			}
+		})
+	}
+}
+
+func TestAreAllSubStringsEqual(t *testing.T) {
+	cases := []struct {
+		input  string
+		size   int
+		result bool
+	}{
+		{"11", 1, true},
+		{"111", 2, false},
+		{"123123123", 3, true},
+		{"123123123124", 3, false},
+	}
+	for _, tt := range cases {
+		t.Run(fmt.Sprintf("%q, %d", tt.input, tt.size), func(t *testing.T) {
+			result := areAllSubStringsEqual(tt.input, tt.size)
+			if result != tt.result {
+				t.Errorf("Expected %t, got %t", tt.result, result)
 			}
 		})
 	}

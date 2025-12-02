@@ -64,11 +64,27 @@ func findSillyIds(r Range) ([]int, error) {
 
 func isSillyId(input int) bool {
 	str := strconv.Itoa(input)
-	if len(str)%2 != 0 {
-		return false
-	}
-	if str[:len(str)/2] == str[len(str)/2:] {
-		return true
+	for i := 1; i <= (len(str) / 2); i++ {
+		if areAllSubStringsEqual(str, i) {
+			return true
+		}
 	}
 	return false
+}
+
+func areAllSubStringsEqual(input string, size int) bool {
+	if len(input)%size != 0 || len(input) <= size {
+		return false
+	}
+
+	for i := 0; i < len(input); i += size {
+		end := i + size
+		// low := input[:size]
+		// high := input[i:end]
+		// fmt.Printf("Comparing %q and %q\n", low, high)
+		if input[:size] != input[i:end] {
+			return false
+		}
+	}
+	return true
 }
