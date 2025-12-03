@@ -4,21 +4,25 @@ import "testing"
 
 func TestFindLargestJoltage(t *testing.T) {
 	cases := []struct {
-		input  string
-		output int
+		input        string
+		output       string
+		numBatteries int
 	}{
-		{"987654321111111", 98},
-		{"811111111111119", 89},
-		{"234234234234278", 78},
-		{"818181911112111", 92},
+		{"987654321111111", "987654321111", 12},
+		{"811111111111119", "811111111119", 12},
+		{"234234234234278", "434234234278", 12},
+		{"818181911112111", "888911112111", 12},
+		{"81119", "8119", 4},
 	}
 	for _, tt := range cases {
 		t.Run(tt.input, func(t *testing.T) {
-			output, err := findLargestJoltage(tt.input)
+			output, err := findLargestJoltage(tt.input, tt.numBatteries)
 			if err != nil {
 				t.Fatal(err)
 			}
-			assertInt(t, output, tt.output, "joltage")
+			if output != tt.output {
+				t.Errorf("Got %q, expected %q", output, tt.output)
+			}
 		})
 	}
 }

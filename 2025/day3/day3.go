@@ -11,6 +11,7 @@ import (
 
 const fileName = "2025/day3/input.txt"
 const sampleFileName = "2025/day3/sampleInput.txt"
+const numberOfBatteries = 12
 
 func ProcessFile() {
 	file, err := os.Open(fileName)
@@ -24,27 +25,40 @@ func ProcessFile() {
 	total := 0
 	for scanner.Scan() {
 		line := scanner.Text()
-		count, err := findLargestJoltage(line)
+		countString, err := findLargestJoltage(line, numberOfBatteries)
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Printf("Input: %q\n", line)
-		fmt.Printf("Joltage: %d\n", count)
+		fmt.Printf("Joltage: %q\n", countString)
+		count, err := strconv.Atoi(countString)
+		if err != nil {
+			log.Fatal(err)
+		}
 		total += count
 	}
 	fmt.Printf("Total is: %d\n", total)
 }
 
-func findLargestJoltage(line string) (int, error) {
-	//Find largest digit before the last digit
-	largestPosition, largestDigit, err := findLargestDigit(line[:len(line)-1])
-	if err != nil {
-		return -1, err
+func findLargestJoltage(line string, batteriesRemaining int) (string, error) {
+	if len(line) <= batteriesRemaining {
+		return line, nil
 	}
-	//Find the next largest digit after the previous found
-	_, nextLargestDigit, err := findLargestDigit(line[largestPosition+1:])
 
-	return (10 * largestDigit) + nextLargestDigit, nil
+	//Find largest digit before the last digit
+	largestPosition, _, err := findLargestDigit(line[:len(line)-batteriesRemaining+1])
+	if err != nil {
+		return "", err
+	}
+	if batteriesRemaining >= 2 {
+		subPart, err := findLargestJoltage(line[largestPosition+1:], batteriesRemaining-1)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return line[largestPosition:largestPosition+1] + subPart, nil
+	} else {
+		return line[largestPosition : largestPosition+1], nil
+	}
 }
 
 // @return index, value
