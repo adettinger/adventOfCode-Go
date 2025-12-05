@@ -71,8 +71,10 @@ func ProcessFile() {
 
 	validInputs := getValidValuesInRanges(ranges, inputs)
 	fmt.Println("ValidInputs: ", validInputs)
-	fmt.Printf("Found %d valid Inputs", len(validInputs))
+	fmt.Printf("Found %d valid Inputs\n", len(validInputs))
 
+	possibleTotal := getCountOfPossibleInputs(ranges)
+	fmt.Println("Count of possible valid inputs: ", possibleTotal)
 }
 
 func createRange(input string) (Range, error) {
@@ -127,4 +129,13 @@ func maxInt(a, b int) int {
 		return a
 	}
 	return b
+}
+
+// Assume ranges are sorted and de-conflicted
+func getCountOfPossibleInputs(ranges []Range) int {
+	total := 0
+	for _, r := range ranges {
+		total += r.max - r.min + 1
+	}
+	return total
 }
