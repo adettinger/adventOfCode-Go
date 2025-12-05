@@ -44,7 +44,7 @@ func ProcessFile() {
 		}
 
 		fmt.Println("Found line: ", line)
-		convRange, _ := createRange(line)
+		convRange, _ := createRangeFromString(line)
 		ranges = append(ranges, convRange)
 	}
 
@@ -77,7 +77,7 @@ func ProcessFile() {
 	fmt.Println("Count of possible valid inputs: ", possibleTotal)
 }
 
-func createRange(input string) (Range, error) {
+func createRangeFromString(input string) (Range, error) {
 	splitStrings := strings.Split(input, "-")
 	if len(splitStrings) != 2 {
 		return Range{}, fmt.Errorf("Could not split %q correctly", input)
