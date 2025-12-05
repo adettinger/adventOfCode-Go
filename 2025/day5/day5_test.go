@@ -2,6 +2,8 @@ package day5
 
 import (
 	"slices"
+	"strconv"
+	"strings"
 	"testing"
 
 	testutils "github.com/adettinger/adventOfCode-Go/testutils"
@@ -49,11 +51,21 @@ func TestMergeOverlappingRanges(t *testing.T) {
 
 func TestGetValidValuesInRange(t *testing.T) {
 	cases := []struct {
-		name string
-	}{}
+		name   string
+		ranges []Range
+		values []int
+		result []int
+	}{
+		{"inclues valid", []Range{{1, 3}}, []int{1, 3}, []int{1, 3}},
+		{"removes invalid", []Range{{1, 3}}, []int{2, 4}, []int{2}},
+		{"sample", []Range{{2, 3}, {5, 6}}, []int{1, 2, 3, 4, 5, 6, 7}, []int{2, 3, 5, 6}},
+	}
 	for _, tt := range cases {
 		t.Run(tt.name, func(t *testing.T) {
-
+			output := getValidValuesInRanges(tt.ranges, tt.values)
+			if !slices.Equal(output, tt.result) {
+				t.Errorf("Got %q, expected %q", sliceOfIntToString(output), sliceOfIntToString(tt.result))
+			}
 		})
 	}
 }
@@ -85,4 +97,12 @@ func assertEqualRanges(t *testing.T, a, b Range) {
 	if a.min != b.min || a.max != b.max {
 		t.Fatalf("Ranges are not equal. %q, %q", a, b)
 	}
+}
+
+func sliceOfIntToString(input []int) string {
+	var sb strings.Builder
+	for _, i := range input {
+		sb.WriteString(strconv.Itoa(i) + ",")
+	}
+	return sb.String()
 }

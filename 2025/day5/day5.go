@@ -22,6 +22,15 @@ func (r Range) String() string {
 	return fmt.Sprintf("[min: %d, max: %d]", r.min, r.max)
 }
 
+func sliceOfRangesToString(ranges []Range) string {
+	var sb strings.Builder
+
+	for _, r := range ranges {
+		sb.WriteString(r.String() + ",")
+	}
+	return sb.String()
+}
+
 // TODO: Convert to using linked list or binary tree not slices
 func ProcessFile() {
 	fileToProcess := fileName
@@ -47,8 +56,9 @@ func ProcessFile() {
 		convRange, _ := createRangeFromString(line)
 		ranges = append(ranges, convRange)
 	}
-
 	fmt.Println("Found ranges: ", ranges)
+
+	//SortRanges
 	sort.Slice(ranges, func(i, j int) bool {
 		return ranges[i].min < ranges[j].min
 	})
@@ -69,10 +79,12 @@ func ProcessFile() {
 	}
 	fmt.Println("Found inputs: ", inputs)
 
+	// Part 1
 	validInputs := getValidValuesInRanges(ranges, inputs)
 	fmt.Println("ValidInputs: ", validInputs)
 	fmt.Printf("Found %d valid Inputs\n", len(validInputs))
 
+	// Part 2
 	possibleTotal := getCountOfPossibleInputs(ranges)
 	fmt.Println("Count of possible valid inputs: ", possibleTotal)
 }
@@ -116,9 +128,19 @@ func getValidValuesInRanges(ranges []Range, values []int) []int {
 
 // TODO: Assume sorted ranges, use binary search
 func isValueInRanges(ranges []Range, value int) bool {
-	for _, r := range ranges {
-		if r.min <= value && r.max >= value {
-			return true
+	l := 0
+	r := len(ranges) - 1
+
+	for l <= r {
+		index := (r + l) / 2
+		if ranges[index].min <= value {
+			if ranges[index].max >= value {
+				return true
+			} else { //range is to the left
+				l = index + 1
+			}
+		} else { //range is to the right
+			r = index - 1
 		}
 	}
 	return false
