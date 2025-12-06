@@ -8,5 +8,5 @@ import (
 
 func main() {
 	fmt.Println("Running main...")
-	day6.ProcessFile()
+	day6.ProcessFilePart2()
 }

@@ -1,69 +1,80 @@
 package day6
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
+	"slices"
 	"strconv"
 	"strings"
+
+	"github.com/adettinger/adventOfCode-Go/utils"
 )
 
 const fileName = "2025/day6/input.txt"
 const sampleFileName = "2025/day6/sampleInput.txt"
 
-func ProcessFile() {
+func ProcessFilePart2() {
 	fileToProcess := fileName
-	fmt.Println("Processing File ", fileToProcess, "...")
-	file, err := os.Open(fileToProcess)
-	if err != nil {
-		log.Fatalf("Failed to open file: %s", err)
+	fmt.Printf("Processing file %q...", fileToProcess)
+	lines := utils.ReadFileToSlice(fileToProcess)
+	numberLines := lines[:len(lines)-1]
+	operationLine := processLine(lines[len(lines)-1])
+
+	inProblem := false
+	currentProblemNumers := make([]int, 0)
+	problemSets := make([]problem, 0)
+	// i is the position to process
+	problemCount := 0
+	for i := 0; i < maxLengthOfStrings(numberLines); i++ {
+		isEmpty := true
+		var sb strings.Builder
+		for j, _ := range numberLines {
+			if numberLines[j][i:i+1] != " " {
+				isEmpty = false
+				sb.WriteString(numberLines[j][i : i+1])
+			}
+		}
+		if isEmpty {
+			if inProblem {
+				// Flush current numbers into a problem set
+				problemSets = append(problemSets, problem{operationLine[problemCount], slices.Clone(currentProblemNumers)})
+				problemCount++
+				currentProblemNumers = nil
+			}
+			inProblem = false
+		} else {
+			inProblem = true
+			temp, _ := strconv.Atoi(sb.String())
+			currentProblemNumers = append(currentProblemNumers, temp)
+		}
 	}
-	defer file.Close()
-
-	scanner := bufio.NewScanner(file)
-
-	lines := make([][]string, 0)
-	for scanner.Scan() {
-		line := scanner.Text()
-		processedLine := processLine(line)
-		lines = append(lines, processedLine)
+	if inProblem {
+		// Flush current numbers into a problem set
+		problemSets = append(problemSets, problem{operationLine[problemCount], slices.Clone(currentProblemNumers)})
+		problemCount++
+	}
+	for _, p := range problemSets {
+		fmt.Println(p)
 	}
 
-	problems := parseStringsToProblems(lines)
-	fmt.Printf("Total of problems: %d", totalSolvesProblems(problems))
+	// Solve and total problems
+	fmt.Println("Total of Solved problems: ", totalOfSolvedProblems(problemSets))
 }
 
-func totalSolvesProblems(input []problem) int {
+func maxLengthOfStrings(input []string) int {
+	max := 0
+	for _, i := range input {
+		if max < len(i) {
+			max = len(i)
+		}
+	}
+	return max
+}
+
+func totalOfSolvedProblems(input []problem) int {
 	total := 0
 	for _, i := range input {
 		temp, _ := i.performOperation()
 		total += temp
 	}
 	return total
-}
-
-func parseStringsToProblems(input [][]string) []problem {
-	problems := make([]problem, len(input[0]))
-	for i := 0; i < len(input[0]); i++ {
-		values := make([]int, len(input)-1)
-		for j := 0; j < len(input)-1; j++ {
-			values[j], _ = strconv.Atoi(input[j][i])
-		}
-
-		problems[i] = problem{operation: input[len(input)-1][i], values: values}
-	}
-	return problems
-}
-
-func processLine(input string) []string {
-	splitStrings := strings.Split(input, " ")
-
-	result := make([]string, 0)
-	for _, i := range splitStrings {
-		if i != "" && i != " " {
-			result = append(result, i)
-		}
-	}
-	return result
 }
