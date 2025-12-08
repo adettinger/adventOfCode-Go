@@ -40,20 +40,25 @@ func ProcessFile() {
 
 	// allDistances := calculateAllDistances(points)
 
-	for i := 1; i <= 1000; i++ {
+	lastUpdatedA := point{}
+	lastUpdatedB := point{}
+	i = 0
+	for len(circuits) > 1 {
 		fmt.Println()
 		fmt.Printf("Round %d...\n", i)
-		circuits = joinClosestPointsInCircuits(circuits)
+		circuits, lastUpdatedA, lastUpdatedB = joinClosestPointsInCircuits(circuits)
+		i++
 	}
 	fmt.Println()
-	printCircuits(circuits)
 	fmt.Println("Count of circuits: ", len(circuits))
+	fmt.Println("CircuitLength: ", len(circuits[0].points))
+	fmt.Printf("Last 2 circuits connected were:\n%v\n%v", lastUpdatedA.String(), lastUpdatedB.String())
 	// fmt.Println("Length of each circuit")
 	// for _, i := range circuits {
 	// 	fmt.Println(len(i.points))
 	// }
 
-	fmt.Printf("Procuct of size of 3 largest circuits: %d\n", multiplythreeLargestCircuitSizes(circuits))
+	// fmt.Printf("Procuct of size of 3 largest circuits: %d\n", multiplythreeLargestCircuitSizes(circuits))
 }
 
 func multiplythreeLargestCircuitSizes(circuits []circuit) int {
@@ -78,7 +83,7 @@ func multiplythreeLargestCircuitSizes(circuits []circuit) int {
 // 	return points, distances
 // }
 
-func joinClosestPointsInCircuits(circuits []circuit) []circuit {
+func joinClosestPointsInCircuits(circuits []circuit) ([]circuit, point, point) {
 	minDistance := math.Inf(1) //Positiv infinity
 
 	circuitA := -1
@@ -116,15 +121,17 @@ func joinClosestPointsInCircuits(circuits []circuit) []circuit {
 	circuits[circuitB].points[pointB].connectedTo = append(circuits[circuitB].points[pointB].connectedTo, circuits[circuitA].points[pointA].id)
 
 	if circuitA == circuitB {
-		return circuits
+		return circuits, circuits[circuitA].points[pointA], circuits[circuitB].points[pointB]
 	}
 
 	// MERGE THE CIRCUITS!!!
 	// Update circuit A to merge A and B
+	pointAToPrint := circuits[circuitA].points[pointA]
+	pointBToPrint := circuits[circuitB].points[pointB]
 	circuits[circuitA].points = append(circuits[circuitA].points, circuits[circuitB].points...)
 	// Remove circuit B
 	circuits = append(circuits[:circuitB], circuits[circuitB+1:]...)
-	return circuits
+	return circuits, pointAToPrint, pointBToPrint
 }
 
 // Example format: 162,817,812
