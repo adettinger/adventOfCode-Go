@@ -3,10 +3,10 @@ package main
 import (
 	"fmt"
 
-	day7 "github.com/adettinger/adventOfCode-Go/2025/day7"
+	day8 "github.com/adettinger/adventOfCode-Go/2025/day8"
 )
 
 func main() {
 	fmt.Println("Running main...")
-	day7.ProcessFile()
+	day8.ProcessFile()
 }
