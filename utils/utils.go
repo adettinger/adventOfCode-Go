@@ -55,6 +55,26 @@ func GetSmallestInt(input []int) (minIndex int, min int) {
 	return
 }
 
+func MinInt(input []int) int {
+	min := math.MaxInt
+	for _, i := range input {
+		if i < min {
+			min = i
+		}
+	}
+	return min
+}
+
+func MaxInt(input []int) int {
+	max := math.MinInt
+	for _, i := range input {
+		if i > max {
+			max = i
+		}
+	}
+	return max
+}
+
 func ReplaceSmallestInt(input []int, new int) []int {
 	indexToReplace, _ := GetSmallestInt(input)
 	input[indexToReplace] = new
