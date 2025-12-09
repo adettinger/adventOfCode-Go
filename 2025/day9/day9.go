@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -25,6 +26,11 @@ type rect struct {
 	max point
 }
 
+type solvedRect struct {
+	min  point
+	max  point
+	size int
+}
 type line struct {
 	a point
 	b point
@@ -55,24 +61,19 @@ func sliceOfPointsToString(points []point) string {
 func getSizeOfRectangeFromPoints(a, b point) int {
 	return utils.AbsInt(a.x-b.x+1) * utils.AbsInt(a.y-b.y+1)
 }
-func getMaxRectSizeInPoly(poly polygon, points []point) (int, point, point) {
-	maxSize := 0
-	pointA := point{}
-	pointB := point{}
-	for i, _ := range points {
-		for j := i + 1; j < len(points); j++ {
-			fmt.Printf("Testing (%d, %d)", i, j)
-			if isRectInPoly(rect{points[i], points[j]}, poly) {
-				rectSize := getSizeOfRectangeFromPoints(points[i], points[j])
-				if rectSize > maxSize {
-					maxSize = rectSize
-					pointA = points[i]
-					pointB = points[j]
-				}
-			}
+func getMaxRectSizeInPoly(poly polygon, rects []solvedRect) solvedRect {
+	// sort rects
+	sort.Slice(rects, func(i int, j int) bool {
+		return rects[i].size > rects[j].size
+	})
+
+	for _, i := range rects {
+		fmt.Printf("Testing (%v, %v, %d)\n", i.min.String(), i.max.String(), i.size)
+		if isRectInPoly(i, poly) {
+			return i
 		}
 	}
-	return maxSize, pointA, pointB
+	return solvedRect{}
 }
 
 func getMaxRectSize(points []point) (int, point, point) {
@@ -100,8 +101,21 @@ func Day9() {
 	points := processFileToPoints(fileToProcess)
 	poly := createPolygonFromPoints(points)
 
-	size, a, b := getMaxRectSizeInPoly(poly, points)
-	fmt.Printf("Found max size of: %d\nFrom points %v and %v", size, a.String(), b.String())
+	sortedRects := generateSortedListOfRects(points)
+
+	maxRect := getMaxRectSizeInPoly(poly, sortedRects)
+	fmt.Printf("Found max size of: %d\nFrom points %v and %v", maxRect.size, maxRect.min.String(), maxRect.max.String())
+}
+
+func generateSortedListOfRects(points []point) []solvedRect {
+	sortedRects := make([]solvedRect, 0)
+	for i, _ := range points {
+		for j := i + 1; j < len(points); j++ {
+			rectSize := getSizeOfRectangeFromPoints(points[i], points[j])
+			sortedRects = append(sortedRects, solvedRect{points[i], points[j], rectSize})
+		}
+	}
+	return sortedRects
 }
 
 func processFileToPoints(filename string) []point {

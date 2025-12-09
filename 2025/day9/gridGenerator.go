@@ -2,7 +2,7 @@ package day9
 
 import "github.com/adettinger/adventOfCode-Go/utils"
 
-func isRectInPoly(r rect, poly polygon) bool {
+func isRectInPoly(r solvedRect, poly polygon) bool {
 	// check that a corner of the rectangle is in the polygon
 	if !isPointInPolygon(poly, r.min) {
 		return false
@@ -64,7 +64,7 @@ func sortInts(a, b int) (int, int) {
 }
 
 // Assume line is orthagonal
-func doesLineIntersectsRect(l line, r rect) bool {
+func doesLineIntersectsRect(l line, r solvedRect) bool {
 	if l.a.x == l.b.x { //vertical line
 		if l.a.x < r.min.x || l.a.x > r.max.x {
 			return false //line is left or right of rectangle
@@ -78,7 +78,16 @@ func doesLineIntersectsRect(l line, r rect) bool {
 			return true
 		}
 	} else { // horizontal line
-		// TODO!!!!!
+		if l.a.y < r.min.y && l.a.y > r.max.y {
+			return true //line is above or below
+		}
+		if l.a.x < r.min.x && l.b.x < r.min.x {
+			return false
+		} else if l.a.x > r.max.x && l.b.x > r.max.x {
+			return false
+		} else {
+			return true
+		}
 	}
 }
 
