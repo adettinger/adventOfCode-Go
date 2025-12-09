@@ -60,3 +60,10 @@ func ReplaceSmallestInt(input []int, new int) []int {
 	input[indexToReplace] = new
 	return input
 }
+
+func AbsInt(input int) int {
+	if input < 0 {
+		return input * -1
+	}
+	return input
+}
