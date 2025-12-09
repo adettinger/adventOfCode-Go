@@ -33,16 +33,36 @@ func getSizeOfRectangeFromPoints(a, b point) int {
 	return utils.AbsInt(a.x-b.x+1) * utils.AbsInt(a.y-b.y+1)
 }
 
-func getMaxRectSize(points []point) int {
-
+func getMaxRectSize(points []point) (int, point, point) {
+	maxSize := 0
+	pointA := point{}
+	pointB := point{}
+	for i, _ := range points {
+		for j := i + 1; j < len(points); j++ {
+			rectSize := getSizeOfRectangeFromPoints(points[i], points[j])
+			if rectSize > maxSize {
+				maxSize = rectSize
+				pointA = points[i]
+				pointB = points[j]
+			}
+		}
+	}
+	return maxSize, pointA, pointB
 }
 
-const fileName = "2025/day8/input.txt"
-const sampleFileName = "2025/day8/sampleInput.txt"
+const fileName = "2025/day9/input.txt"
+const sampleFileName = "2025/day9/sampleInput.txt"
 
-func day9() {
+func Day9() {
 	fileToProcess := fileName
 	points := processFileToPoints(fileToProcess)
+	fmt.Println("Found points")
+	for _, i := range points {
+		println(i.String())
+	}
+
+	size, a, b := getMaxRectSize(points)
+	fmt.Printf("Found max size of: %d\nFrom points %v and %v", size, a.String(), b.String())
 }
 
 func processFileToPoints(filename string) []point {
