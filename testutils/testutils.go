@@ -34,3 +34,11 @@ func AssertInts(t testing.TB, got, want int) {
 		t.Errorf("got %d want %d", got, want)
 	}
 }
+
+func AssertBool(t testing.TB, got, want bool) {
+	t.Helper()
+
+	if got != want {
+		t.Errorf("Got: %t, Want %t", got, want)
+	}
+}
