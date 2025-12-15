@@ -3,6 +3,7 @@ package day9
 import (
 	"errors"
 	"fmt"
+	"os"
 )
 
 // Assume rects are sorted
@@ -20,9 +21,14 @@ const fileName = "2025/day9/input.txt"
 const sampleFileName = "2025/day9/sampleInput.txt"
 
 func Day9() {
-	fileToProcess := sampleFileName
+	fileToProcess := fileName
 	points := processFileToPoints(fileToProcess)
-	poly := createPolygonFromPoints(points)
+	poly, err := createPolygonFromPoints(points)
+
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 
 	sortedRects := generateSortedListOfRectsFromPoints(points)
 

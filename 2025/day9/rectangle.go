@@ -70,11 +70,10 @@ func sortRect(r rectangle) rectangle {
 }
 
 // Assume line is orthagonal
-// TODO: Rethink, consider lines that overlap
-// Consider if line edge is on edge of rectangle
+// Assume line is sorted
 func doesEdgeIntersectsRect(l line, r rectangle) bool {
 	r = sortRect(r)
-	l = sortOrthagonalLine(l)
+	l = sortOrthagonalLineAsc(l)
 	if isLineVertical(l) { //vertical line
 		return doesVerticalLineIntersectRect(l, r)
 	} else { // horizontal line
@@ -91,48 +90,38 @@ func doesVerticalLineIntersectRect(l line, r rectangle) bool {
 	/*
 		// Handle line ends on rect edge
 	*/
+	// top of line is top of rect
 	if r.b.y == l.b.y {
-		// top of line is top of rect
 		return true
 	}
+	// top of line is bottom of rect
 	if r.a.y == l.b.y {
-		// top of line is bottom of rect
 		return false
 	}
 
+	// bottom of line is bottom of rect
 	if r.a.y == l.a.y {
-		// bottom of line is bottom of rect
 		return true
 	}
+	// top of rect is bottom of line
 	if r.b.y == l.a.y {
-		// top of rect is bottom of line
 		return false
 	}
 
-	//TODOOOOOOOOOO: Handle line and rect dont share point but may intersect
-
-	// TODO: Check top line, check bottom line
-	//y positions must be both above or both below rect
-	if l.a.y < r.a.y && l.b.y < r.a.y {
-		return false
-	} else if l.a.y > r.b.y && l.b.y > r.b.y {
-		return false
-	} else {
+	// crosses top line
+	if l.b.y > r.b.y && l.a.y < r.b.y {
 		return true
 	}
+	// Crosses bottom line
+	if l.a.y < r.a.y && l.b.y > r.a.y {
+		return true
+	}
+	return false
 }
 
 // Assume rect is sorted
 func doesHorizontalLineIntersecRect(l line, r rectangle) bool {
-	if l.a.y <= r.a.y || l.a.y >= r.b.y {
-		return false //line is above or below
-	}
-	// TODO: check left line, check right line
-	if l.a.x < r.a.x && l.b.x < r.a.x {
-		return false
-	} else if l.a.x > r.b.x && l.b.x > r.b.x {
-		return false
-	} else {
-		return true
-	}
+	vertLine := line{point{l.a.y, l.a.x}, point{l.b.y, l.b.x}}
+	flippedRect := rectangle{point{r.a.y, r.a.x}, point{r.b.y, r.b.x}, r.size}
+	return doesVerticalLineIntersectRect(vertLine, flippedRect)
 }

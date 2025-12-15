@@ -88,7 +88,7 @@ func AbsInt(input int) int {
 	return input
 }
 
-func SortInts(a, b int) (int, int) {
+func SortIntsAsc(a, b int) (int, int) {
 	if a < b {
 		return a, b
 	}

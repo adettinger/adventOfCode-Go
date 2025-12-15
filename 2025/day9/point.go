@@ -22,3 +22,7 @@ func sliceOfPointsToString(points []point) string {
 	output := sb.String()
 	return output[:len(output)-2]
 }
+
+func arePointsEqual(a, b point) bool {
+	return a.x == b.x && a.y == b.y
+}

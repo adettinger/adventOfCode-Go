@@ -58,6 +58,13 @@ func calculateXvalFromIntersectionOfLines(a, b slopeInterceptLine) (float64, err
 	return (a.b - b.b) / (b.m - a.m), nil
 }
 
+func isLineOrthagonal(l line) bool {
+	if isLineVertical(l) || isLineHorizontal(l) {
+		return true
+	}
+	return false
+}
+
 func isLineVertical(l line) bool {
 	if l.a.x == l.b.x {
 		return true
@@ -65,12 +72,19 @@ func isLineVertical(l line) bool {
 	return false
 }
 
-func sortOrthagonalLine(l line) line {
+func isLineHorizontal(l line) bool {
+	if l.a.y == l.b.y {
+		return true
+	}
+	return false
+}
+
+func sortOrthagonalLineAsc(l line) line {
 	if isLineVertical(l) {
-		l.a.y, l.b.y = utils.SortInts(l.a.y, l.b.y)
+		l.a.y, l.b.y = utils.SortIntsAsc(l.a.y, l.b.y)
 		return l
 	} else {
-		l.a.x, l.b.x = utils.SortInts(l.a.x, l.b.x)
+		l.a.x, l.b.x = utils.SortIntsAsc(l.a.x, l.b.x)
 		return l
 	}
 }

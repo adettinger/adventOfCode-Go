@@ -31,13 +31,30 @@ func (poly polygon) String() string {
 	return fmt.Sprintf("{vertexes: %v, edges: %v}", vertexString, edgesString)
 }
 
-func createPolygonFromPoints(points []point) polygon {
+func createPolygonFromPoints(points []point) (polygon, error) {
+	prevPoint := point{0, 0}
+	prev2Point := point{0, 0}
+
 	edges := make([]line, len(points))
 	edges[0] = line{points[0], points[len(points)-1]}
 	for i := 1; i < len(points); i++ {
+		edge := line{points[i], points[i-1]}
+		if !isLineOrthagonal(edge) {
+			return polygon{}, fmt.Errorf("Line is not orthagonal: %v", edge.String())
+		}
+
+		if arePointsEqual(prevPoint, points[i]) {
+			return polygon{}, fmt.Errorf("prev point is equal at index: %d", i)
+		}
+		if arePointsEqual(prev2Point, points[i]) {
+			return polygon{}, fmt.Errorf("prev2 point is equal at index: %d", i)
+		}
+		prev2Point = prevPoint
+		prevPoint = points[i]
+
 		edges[i] = line{points[i], points[i-1]}
 	}
-	return polygon{vertexes: points, edges: edges}
+	return polygon{vertexes: points, edges: edges}, nil
 }
 
 /*
@@ -45,7 +62,7 @@ func createPolygonFromPoints(points []point) polygon {
 */
 
 func isRectInPoly(r rectangle, poly polygon) bool {
-	// The corner of the rectangle is in the polygon b/c it is also an edge of the polygon
+	// TODO: Check a corner just inside is in the rectangle
 
 	for _, edge := range poly.edges {
 		if doesEdgeIntersectsRect(edge, r) {
