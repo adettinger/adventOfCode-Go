@@ -17,6 +17,10 @@ type rectangle struct {
 	size int
 }
 
+func (r rectangle) String() string {
+	return fmt.Sprintf("a: %v, b: %v, size: %d", r.a.String(), r.b.String(), r.size)
+}
+
 func createRectangleFromPoints(a, b point) rectangle {
 	return rectangle{a, b, getSizeOfRectangeFromPoints(a, b)}
 }

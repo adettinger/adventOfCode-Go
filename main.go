@@ -8,5 +8,5 @@ import (
 
 func main() {
 	fmt.Println("Running main...")
-	day9.Day9()
+	day9.V2()
 }
