@@ -11,7 +11,7 @@ import (
 )
 
 func V2() {
-	fileToProcess := sampleFileName
+	fileToProcess := fileName
 	points := processFileToPoints(fileToProcess)
 
 	// Get sorted unique x and y cords
@@ -36,6 +36,7 @@ func V2() {
 			grid[i][j] = "."
 		}
 	}
+	fmt.Println("Empty")
 	printGrid(grid)
 
 	// Set corner points
@@ -44,6 +45,7 @@ func V2() {
 		grid[yMap[p.y]][xMap[p.x]] = "#"
 		mappedPoints[i] = point{x: xMap[p.x], y: yMap[p.y]}
 	}
+	fmt.Println("Corners")
 	printGrid(grid)
 
 	// rasterize
@@ -61,11 +63,13 @@ func V2() {
 			}
 		}
 	}
+	fmt.Println("Edges")
 	printGrid(grid)
 
 	// fill polygon
 	startingPoint, _ := getInsidePoint(grid)
 	grid = floodFill(grid, startingPoint)
+	fmt.Println("Filled")
 	printGrid(grid)
 
 	// test rects
@@ -136,6 +140,7 @@ func getInsidePoint(grid [][]string) (point, error) {
 	return point{}, errors.New("No inside point found")
 }
 
+// Doesnt work in cases where the first point is also filled (small grids)
 func floodFill(grid [][]string, start point) [][]string {
 	s := stack.New()
 	directions := [][]int{{0, 1}, {0, -1}, {1, 0}, {-1, 0}}
